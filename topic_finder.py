@@ -59,7 +59,8 @@ def get_headings(keyword):
         print('Getting headings from: ' + url)
         try:
             json = get_json_from_url(url)
-        except:
+        except Exception as e:
+            print(e)
             print("Error getting headings from: " + url)
             continue
         else:
