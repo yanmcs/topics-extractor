@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Content extractor</title>
+    <title>Topic finder</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,43 +21,67 @@
         form {
             font-size: 16px;
         }
-        #result{
+
+        #result {
             padding: 20px;
         }
-
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+        // When submit button on "headings form" is clicked, the function checks for all checkboxed selected
+        // then it creates a string and copys it to the clipboard.
+        $(document).ready(function () {
+            $("#headings").submit(function (e) {
+                e.preventDefault();
+                var headings = "";
+                $("input[name='headings']:checked").each(function () {
+                    headings += '<h2>'+ $(this).val() + "</h2>";
+                });
+                copyToClipboard(headings);
+                alert("Copied to clipboard: \n" + headings);
+            });
+        });
+
+        // Copies the string to the clipboard.
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)            
+            alert("Copied to clipboard: \n" + text);
+        }
+
         // Ajax form submit and print JSON response in the console
-        $(document).ready(function() {
-            $('#form').submit(function(e) {
+        $(document).ready(function () {
+            $('#form').submit(function (e) {
                 e.preventDefault();
                 $.ajax({
                     type: 'POST',
                     url: '/headings',
                     data: $('#form').serialize(),
-                    success: function(data) {
+                    success: function (data) {
                         console.log(data);
                         // Iterate over the "headings' key in the JSON object and change html
-                        let html = '';
+                        let html = '<form id="headings">';
                         for (i = 0; i < data.headings.length; i++) {
-                            html += '<p>' + data.headings[i] + '</p>';
+                            html += '<input type="checkbox" name="headings" id="' + data.headings[i] + '" value="' + data.headings[i] + '" checked />';
+                            html += '<label for="' + data.headings[i] + '">' + data.headings[i] + '</label><br>';
                         }
+                        // Add copy button to copy all selected headings to the clipboard
+                        html += '<button type="button" onclick="copyToClipboard()">Copy to clipboard</button>';
+                        html += '</form>';
                         $('#result').html(html);
                     }
                     // print the response in the console on fail
-                }).fail(function(data) {
+                }).fail(function (data) {
                     console.log(data);
-                }); 
                 });
             });
+        });
 
         // Change div content to loading image while ajax call is in progress
-        $(document).ajaxStart(function() {
+        $(document).ajaxStart(function () {
             $('#result').html('<img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" alt="Loading...">');
         });
         // Change div content to error message if ajax call fails
-        $(document).ajaxError(function() {
+        $(document).ajaxError(function () {
             $('#result').html('<p>Error: Ajax call failed.</p>');
         });
 
@@ -90,6 +114,300 @@
             You can find the source code of this project on <a href="https://github.com/yanmcs/topics-extractor"
                 target="_blank">Github</a>.
         </p>
+        <form id="headings"><input type="checkbox" name="headings"
+                id="Chapada das Mesas: Onde fica, como ir e melhor época?"
+                value="Chapada das Mesas: Onde fica, como ir e melhor época?" checked /><label
+                for="Chapada das Mesas: Onde fica, como ir e melhor época?">Chapada das Mesas: Onde fica, como ir e
+                melhor época?</label><br><input type="checkbox" name="headings"
+                id="Para os amantes de natureza, cultura e aventura"
+                value="Para os amantes de natureza, cultura e aventura" checked="" /><label
+                for="Para os amantes de natureza, cultura e aventura">Para os amantes de natureza, cultura e
+                aventura</label><br><input type="checkbox" name="headings" id="CONHEÇA NOSSOS ROTEIROS!"
+                value="CONHEÇA NOSSOS ROTEIROS!" checked="" /><label for="CONHEÇA NOSSOS ROTEIROS!">CONHEÇA NOSSOS
+                ROTEIROS!</label><br><input type="checkbox" name="headings"
+                id="Assine nossa newsletter e receba nossos roteiros e novos textos do blog"
+                value="Assine nossa newsletter e receba nossos roteiros e novos textos do blog" checked="" /><label
+                for="Assine nossa newsletter e receba nossos roteiros e novos textos do blog">Assine nossa newsletter e
+                receba nossos roteiros e novos textos do blog</label><br><input type="checkbox" name="headings"
+                id="Compartilhe:" value="Compartilhe:" checked="" /><label
+                for="Compartilhe:">Compartilhe:</label><br><input type="checkbox" name="headings" id="Navegação de Post"
+                value="Navegação de Post" checked="" /><label for="Navegação de Post">Navegação de
+                Post</label><br><input type="checkbox" name="headings"
+                id="Um Comentário em: “Chapada das Mesas: Onde fica, como ir e melhor época?”"
+                value="Um Comentário em: “Chapada das Mesas: Onde fica, como ir e melhor época?”" checked="" /><label
+                for="Um Comentário em: “Chapada das Mesas: Onde fica, como ir e melhor época?”">Um Comentário em:
+                “Chapada das Mesas: Onde fica, como ir e melhor época?”</label><br><input type="checkbox"
+                name="headings" id="Deixe uma resposta Cancelar resposta" value="Deixe uma resposta Cancelar resposta"
+                checked="" /><label for="Deixe uma resposta Cancelar resposta">Deixe uma resposta Cancelar
+                resposta</label><br><input type="checkbox" name="headings" id="Assine o Blog Vida ao Ar Livre"
+                value="Assine o Blog Vida ao Ar Livre" checked="" /><label for="Assine o Blog Vida ao Ar Livre">Assine o
+                Blog Vida ao Ar Livre</label><br><input type="checkbox" name="headings" id="Categorias"
+                value="Categorias" checked="" /><label for="Categorias">Categorias</label><br><input type="checkbox"
+                name="headings" id="Atendimento Pisa Trekking" value="Atendimento Pisa Trekking" checked="" /><label
+                for="Atendimento Pisa Trekking">Atendimento Pisa Trekking</label><br><input type="checkbox"
+                name="headings" id="Acompanhe a Pisa Trekking" value="Acompanhe a Pisa Trekking" checked="" /><label
+                for="Acompanhe a Pisa Trekking">Acompanhe a Pisa Trekking</label><br><input type="checkbox"
+                name="headings" id="Leia nossas publicações" value="Leia nossas publicações" checked="" /><label
+                for="Leia nossas publicações">Leia nossas publicações</label><br><input type="checkbox" name="headings"
+                id="Principais temas do blog" value="Principais temas do blog" checked="" /><label
+                for="Principais temas do blog">Principais temas do blog</label><br><input type="checkbox"
+                name="headings" id="Chapada das Mesas" value="Chapada das Mesas" checked="" /><label
+                for="Chapada das Mesas">Chapada das Mesas</label><br><input type="checkbox" name="headings"
+                id="Chapada das Mesas: roteiro, passeios, melhor época"
+                value="Chapada das Mesas: roteiro, passeios, melhor época" checked="" /><label
+                for="Chapada das Mesas: roteiro, passeios, melhor época">Chapada das Mesas: roteiro, passeios, melhor
+                época</label><br><input type="checkbox" name="headings" id="Como chegar à Chapada das Mesas"
+                value="Como chegar à Chapada das Mesas" checked="" /><label for="Como chegar à Chapada das Mesas">Como
+                chegar à Chapada das Mesas</label><br><input type="checkbox" name="headings"
+                id="Quando ir para a Chapada das Mesas" value="Quando ir para a Chapada das Mesas" checked="" /><label
+                for="Quando ir para a Chapada das Mesas">Quando ir para a Chapada das Mesas</label><br><input
+                type="checkbox" name="headings" id="Hospedagem na Chapada das Mesas"
+                value="Hospedagem na Chapada das Mesas" checked="" /><label
+                for="Hospedagem na Chapada das Mesas">Hospedagem na Chapada das Mesas</label><br><input type="checkbox"
+                name="headings" id="Quantos dias ficar e como explorar a Chapada das Mesas"
+                value="Quantos dias ficar e como explorar a Chapada das Mesas" checked="" /><label
+                for="Quantos dias ficar e como explorar a Chapada das Mesas">Quantos dias ficar e como explorar a
+                Chapada das Mesas</label><br><input type="checkbox" name="headings" id="Atrações" value="Atrações"
+                checked="" /><label for="Atrações">Atrações</label><br><input type="checkbox" name="headings"
+                id="Encanto Azul e Poço Azul" value="Encanto Azul e Poço Azul" checked="" /><label
+                for="Encanto Azul e Poço Azul">Encanto Azul e Poço Azul</label><br><input type="checkbox"
+                name="headings" id="Complexo Pedra Caída" value="Complexo Pedra Caída" checked="" /><label
+                for="Complexo Pedra Caída">Complexo Pedra Caída</label><br><input type="checkbox" name="headings" id=""
+                value="" checked="" /><label for=""></label><br><input type="checkbox" name="headings"
+                id="Portal da Chapada" value="Portal da Chapada" checked="" /><label for="Portal da Chapada">Portal da
+                Chapada</label><br><input type="checkbox" name="headings" id="São Romão e Prata"
+                value="São Romão e Prata" checked="" /><label for="São Romão e Prata">São Romão e
+                Prata</label><br><input type="checkbox" name="headings" id="Resolva sua viagem aqui"
+                value="Resolva sua viagem aqui" checked="" /><label for="Resolva sua viagem aqui">Resolva sua viagem
+                aqui</label><br><input type="checkbox" name="headings"
+                id="Chapada das Mesas – Maranhão: Roteiro, dicas e atrações"
+                value="Chapada das Mesas – Maranhão: Roteiro, dicas e atrações" checked="" /><label
+                for="Chapada das Mesas – Maranhão: Roteiro, dicas e atrações">Chapada das Mesas – Maranhão: Roteiro,
+                dicas e atrações</label><br><input type="checkbox" name="headings" id="Porque Chapada das Mesas?"
+                value="Porque Chapada das Mesas?" checked="" /><label for="Porque Chapada das Mesas?">Porque Chapada das
+                Mesas?</label><br><input type="checkbox" name="headings" id="Parque Nacional da Chapada das Mesas"
+                value="Parque Nacional da Chapada das Mesas" checked="" /><label
+                for="Parque Nacional da Chapada das Mesas">Parque Nacional da Chapada das Mesas</label><br><input
+                type="checkbox" name="headings" id="Chapada das Mesas: Guia prático"
+                value="Chapada das Mesas: Guia prático" checked="" /><label
+                for="Chapada das Mesas: Guia prático">Chapada
+                das Mesas: Guia prático</label><br><input type="checkbox" name="headings"
+                id="Dicas de Viagem: Quando Ir, como chegar, onde ficar e o que fazer na Chapada das Mesas – Maranhão"
+                value="Dicas de Viagem: Quando Ir, como chegar, onde ficar e o que fazer na Chapada das Mesas – Maranhão"
+                checked="" /><label
+                for="Dicas de Viagem: Quando Ir, como chegar, onde ficar e o que fazer na Chapada das Mesas – Maranhão">Dicas
+                de Viagem: Quando Ir, como chegar, onde ficar e o que fazer na Chapada das Mesas –
+                Maranhão</label><br><input type="checkbox" name="headings"
+                id="Quando ir à Chapada das Mesas: Melhor época" value="Quando ir à Chapada das Mesas: Melhor época"
+                checked="" /><label for="Quando ir à Chapada das Mesas: Melhor época">Quando ir à Chapada das Mesas:
+                Melhor época</label><br><input type="checkbox" name="headings"
+                id="Estação seca na Chapada das Mesas – Maranhão" value="Estação seca na Chapada das Mesas – Maranhão"
+                checked="" /><label for="Estação seca na Chapada das Mesas – Maranhão">Estação seca na Chapada das Mesas
+                –
+                Maranhão</label><br><input type="checkbox" name="headings" id="Estação chuvosa na Chapada das Mesas MA"
+                value="Estação chuvosa na Chapada das Mesas MA" checked="" /><label
+                for="Estação chuvosa na Chapada das Mesas MA">Estação chuvosa na Chapada das Mesas MA</label><br><input
+                type="checkbox" name="headings" id="Onde fica a Chapada das Mesas: Como chegar"
+                value="Onde fica a Chapada das Mesas: Como chegar" checked="" /><label
+                for="Onde fica a Chapada das Mesas: Como chegar">Onde fica a Chapada das Mesas: Como
+                chegar</label><br><input type="checkbox" name="headings"
+                id="Como chegar na Chapada das Mesas – Maranhão" value="Como chegar na Chapada das Mesas – Maranhão"
+                checked="" /><label for="Como chegar na Chapada das Mesas – Maranhão">Como chegar na Chapada das Mesas –
+                Maranhão</label><br><input type="checkbox" name="headings" id="De Imperatriz a Carolina"
+                value="De Imperatriz a Carolina" checked="" /><label for="De Imperatriz a Carolina">De Imperatriz a
+                Carolina</label><br><input type="checkbox" name="headings" id="De Palmas a Carolina"
+                value="De Palmas a Carolina" checked="" /><label for="De Palmas a Carolina">De Palmas a
+                Carolina</label><br><input type="checkbox" name="headings"
+                id="Quantos dias ficar na Chapada das Mesas MA" value="Quantos dias ficar na Chapada das Mesas MA"
+                checked="" /><label for="Quantos dias ficar na Chapada das Mesas MA">Quantos dias ficar na Chapada das
+                Mesas MA</label><br><input type="checkbox" name="headings"
+                id="Onde ficar na Chapada das Mesas: Dica de pousada"
+                value="Onde ficar na Chapada das Mesas: Dica de pousada" checked="" /><label
+                for="Onde ficar na Chapada das Mesas: Dica de pousada">Onde ficar na Chapada das Mesas: Dica de
+                pousada</label><br><input type="checkbox" name="headings"
+                id="O que fazer na Chapada das Mesas: Roteiro de 6 dias"
+                value="O que fazer na Chapada das Mesas: Roteiro de 6 dias" checked="" />
+            <label for="O que fazer na Chapada das Mesas: Roteiro de 6 dias">O que fazer na Chapada das Mesas: Roteiro
+                de 6 dias</label><br><input type="checkbox" name="headings" id="Roteiro de 4 dias"
+                value="Roteiro de 4 dias" checked="" /><label for="Roteiro de 4 dias">Roteiro de 4
+                dias</label><br><input type="checkbox" name="headings" id="O que fazer na Chapada das Mesas à noite"
+                value="O que fazer na Chapada das Mesas à noite" checked="" /><label
+                for="O que fazer na Chapada das Mesas à noite">O que fazer na Chapada das Mesas à
+                noite</label><br><input type="checkbox" name="headings"
+                id="Atrações da Chapada das Mesas: Pontos turísticos"
+                value="Atrações da Chapada das Mesas: Pontos turísticos" checked="" /><label
+                for="Atrações da Chapada das Mesas: Pontos turísticos">Atrações da Chapada das Mesas: Pontos
+                turísticos</label><br><input type="checkbox" name="headings"
+                id="Cachoeiras do Parque Nacional da Chapada das Mesas"
+                value="Cachoeiras do Parque Nacional da Chapada das Mesas" checked="" /><label
+                for="Cachoeiras do Parque Nacional da Chapada das Mesas">Cachoeiras do Parque Nacional da Chapada das
+                Mesas</label><br><input type="checkbox" name="headings" id="Cachoeira de São Romão"
+                value="Cachoeira de São Romão" checked="" /><label for="Cachoeira de São Romão">Cachoeira de São
+                Romão</label><br><input type="checkbox" name="headings" id="Cachoeiras da Prata"
+                value="Cachoeiras da Prata" checked="" /><label for="Cachoeiras da Prata">Cachoeiras da
+                Prata</label><br><input type="checkbox" name="headings" id="Morro do Chapéu – Chapada das Mesas"
+                value="Morro do Chapéu – Chapada das Mesas" checked="" /><label
+                for="Morro do Chapéu – Chapada das Mesas">Morro do Chapéu – Chapada das Mesas</label><br><input
+                type="checkbox" name="headings" id="Complexo Pedra Caída – Carolina MA"
+                value="Complexo Pedra Caída – Carolina MA" checked="" /><label
+                for="Complexo Pedra Caída – Carolina MA">Complexo Pedra Caída – Carolina MA</label><br><input
+                type="checkbox" name="headings" id="Cachoeira do Santuário – Pedra Caída"
+                value="Cachoeira do Santuário – Pedra Caída" checked="" /><label
+                for="Cachoeira do Santuário – Pedra Caída">Cachoeira do Santuário – Pedra Caída</label><br><input
+                type="checkbox" name="headings" id="Cachoeira da Caverna" value="Cachoeira da Caverna"
+                checked="" /><label for="Cachoeira da Caverna">Cachoeira da Caverna</label><br><input type="checkbox"
+                name="headings" id="Cachoeira do Capelão" value="Cachoeira do Capelão" checked="" /><label
+                for="Cachoeira do Capelão">Cachoeira do Capelão</label><br><input type="checkbox" name="headings"
+                id="Cachoeira da Porteira e Garrote" value="Cachoeira da Porteira e Garrote" checked="" /><label
+                for="Cachoeira da Porteira e Garrote">Cachoeira da Porteira e Garrote</label><br><input type="checkbox"
+                name="headings" id="Teleférico e tirolesa da Pedra Caída" value="Teleférico e tirolesa da Pedra Caída"
+                checked="" /><label for="Teleférico e tirolesa da Pedra Caída">Teleférico e tirolesa da Pedra
+                Caída</label><br><input type="checkbox" name="headings" id="Pirâmide exotérica"
+                value="Pirâmide exotérica" checked="" /><label for="Pirâmide exotérica">Pirâmide
+                exotérica</label><br><input type="checkbox" name="headings"
+                id="O que fazer na Chapada das Mesas, em Riachão MA"
+                value="O que fazer na Chapada das Mesas, em Riachão MA" checked="" /><label
+                for="O que fazer na Chapada das Mesas, em Riachão MA">O que fazer na Chapada das Mesas, em Riachão
+                MA</label><br><input type="checkbox" name="headings" id="Encanto Azul – Riachão"
+                value="Encanto Azul – Riachão" checked="" /><label for="Encanto Azul – Riachão">Encanto Azul –
+                Riachão</label><br><input type="checkbox" name="headings" id="Poço Azul – Maranhão"
+                value="Poço Azul – Maranhão" checked="" /><label for="Poço Azul – Maranhão">Poço Azul –
+                Maranhão</label><br><input type="checkbox" name="headings" id="Cachoeira Santa Bárbara"
+                value="Cachoeira Santa Bárbara" checked="" /><label for="Cachoeira Santa Bárbara">Cachoeira Santa
+                Bárbara</label><br><input type="checkbox" name="headings"
+                id="Pontos turísticos da Chapada das Mesas, próximos a Carolina"
+                value="Pontos turísticos da Chapada das Mesas, próximos a Carolina" checked="" /><label
+                for="Pontos turísticos da Chapada das Mesas, próximos a Carolina">Pontos turísticos da Chapada das
+                Mesas, próximos a Carolina</label><br><input type="checkbox" name="headings"
+                id="Portal da Chapada das Mesas" value="Portal da Chapada das Mesas" checked="" /><label
+                for="Portal da Chapada das Mesas">Portal da Chapada das Mesas</label><br><input type="checkbox"
+                name="headings" id="Portal da Duas Dimensões e Trilha dos Pilares"
+                value="Portal da Duas Dimensões e Trilha dos Pilares" checked="" /><label
+                for="Portal da Duas Dimensões e Trilha dos Pilares">Portal da Duas Dimensões e Trilha dos
+                Pilares</label><br><input type="checkbox" name="headings" id="Cachoeiras Gêmeas do Itapecuru"
+                value="Cachoeiras Gêmeas do Itapecuru" checked="" /><label
+                for="Cachoeiras Gêmeas do Itapecuru">Cachoeiras
+                Gêmeas do Itapecuru</label><br><input type="checkbox" name="headings" id="Cachoeira do Dodô"
+                value="Cachoeira do Dodô" checked="" /><label for="Cachoeira do Dodô">Cachoeira do
+                Dodô</label><br><input type="checkbox" name="headings"
+                id="Pedra Encantada e pôr do Sol no Rio Tocantins" value="Pedra Encantada e pôr do Sol no Rio Tocantins"
+                checked="" /><label for="Pedra Encantada e pôr do Sol no Rio Tocantins">Pedra Encantada e pôr do Sol no
+                Rio
+                Tocantins</label><br><input type="checkbox" name="headings" id="Dica de agência na Chapada das Mesas"
+                value="Dica de agência na Chapada das Mesas" checked="" /><label
+                for="Dica de agência na Chapada das Mesas">Dica de agência na Chapada das Mesas</label><br><input
+                type="checkbox" name="headings" id="Mapa dos pontos turísticos da Chapada das Mesas"
+                value="Mapa dos pontos turísticos da Chapada das Mesas" checked="" /><label
+                for="Mapa dos pontos turísticos da Chapada das Mesas">Mapa dos pontos turísticos da Chapada das
+                Mesas</label><br><input type="checkbox" name="headings" id="Onde comer em Carolina"
+                value="Onde comer em Carolina" checked="" /><label for="Onde comer em Carolina">Onde comer em
+                Carolina</label><br><input type="checkbox" name="headings"
+                id="O que levar em uma viagem a Chapada das Mesas" value="O que levar em uma viagem a Chapada das Mesas"
+                checked="" /><label for="O que levar em uma viagem a Chapada das Mesas">O que levar em uma viagem a
+                Chapada das Mesas</label><br><input type="checkbox" name="headings"
+                id="Chapada das Mesas: confira onde fica e quais os atrativos principais do parque nacional"
+                value="Chapada das Mesas: confira onde fica e quais os atrativos principais do parque nacional"
+                checked="" /><label
+                for="Chapada das Mesas: confira onde fica e quais os atrativos principais do parque nacional">Chapada
+                das Mesas: confira onde fica e quais os atrativos principais do parque nacional</label><br><input
+                type="checkbox" name="headings" id="Chapada das Mesas: belezas naturais no Nordeste do país!"
+                value="Chapada das Mesas: belezas naturais no Nordeste do país!" checked="" /><label
+                for="Chapada das Mesas: belezas naturais no Nordeste do país!">Chapada das Mesas: belezas naturais no
+                Nordeste do país!</label><br><input type="checkbox" name="headings" id="Onde fica a Chapada das Mesas?"
+                value="Onde fica a Chapada das Mesas?" checked="" /><label for="Onde fica a Chapada das Mesas?">Onde
+                fica
+                a Chapada das Mesas?</label><br><input type="checkbox" name="headings"
+                id="Como ir para a Chapada das Mesas?" value="Como ir para a Chapada das Mesas?" checked="" /><label
+                for="Como ir para a Chapada das Mesas?">Como ir para a Chapada das Mesas?</label><br><input
+                type="checkbox" name="headings" id="Qual a melhor época para visitar a Chapada das Mesas?"
+                value="Qual a melhor época para visitar a Chapada das Mesas?" checked="" /><label
+                for="Qual a melhor época para visitar a Chapada das Mesas?">Qual a melhor época para visitar a Chapada
+                das Mesas?</label><br><input type="checkbox" name="headings" id="O que significa Chapada das Mesas?"
+                value="O que significa Chapada das Mesas?" checked="" /><label
+                for="O que significa Chapada das Mesas?">O
+                que significa Chapada das Mesas?</label><br><input type="checkbox" name="headings"
+                id="Quanto custa Chapada das Mesas?" value="Quanto custa Chapada das Mesas?" checked="" /><label
+                for="Quanto custa Chapada das Mesas?">Quanto custa Chapada das Mesas?</label><br><input type="checkbox"
+                name="headings" id="Seguro viagem nacional em promoção!" value="Seguro viagem nacional em promoção!"
+                checked="" /><label for="Seguro viagem nacional em promoção!">Seguro viagem nacional em
+                promoção!</label><br><input type="checkbox" name="headings" id="Chapada das Mesas: mapa"
+                value="Chapada das Mesas: mapa" checked="" /><label for="Chapada das Mesas: mapa">Chapada das Mesas:
+                mapa</label><br><input type="checkbox" name="headings" id="Chapada das Mesas: o que fazer"
+                value="Chapada das Mesas: o que fazer" checked="" /><label for="Chapada das Mesas: o que fazer">Chapada
+                das Mesas: o que fazer</label><br><input type="checkbox" name="headings" id="Encanto Azul"
+                value="Encanto Azul" checked="" /><label for="Encanto Azul">Encanto Azul</label><br><input
+                type="checkbox" name="headings" id="Poço Azul" value="Poço Azul" checked="" /><label
+                for="Poço Azul">Poço
+                Azul</label><br><input type="checkbox" name="headings" id="Cachoeira do Santuário"
+                value="Cachoeira do Santuário" checked="" /><label for="Cachoeira do Santuário">Cachoeira do
+                Santuário</label><br><input type="checkbox" name="headings" id="Pedra Caída" value="Pedra Caída"
+                checked="" /><label for="Pedra Caída">Pedra Caída</label><br><input type="checkbox" name="headings"
+                id="Cachoeiras de Itapecuru" value="Cachoeiras de Itapecuru" checked="" /><label
+                for="Cachoeiras de Itapecuru">Cachoeiras de Itapecuru</label><br><input type="checkbox" name="headings"
+                id="Cachoeira de Santa Bárbara" value="Cachoeira de Santa Bárbara" checked="" /><label
+                for="Cachoeira de Santa Bárbara">Cachoeira de Santa Bárbara</label><br><input type="checkbox"
+                name="headings" id="Parque Nacional da Chapada das Mesas" value="Parque Nacional da Chapada das Mesas"
+                checked="" /><label for="Parque Nacional da Chapada das Mesas">Parque Nacional da Chapada das
+                Mesas</label><br><input type="checkbox" name="headings" id="Cachoeira São Romão"
+                value="Cachoeira São Romão" checked="" /><label for="Cachoeira São Romão">Cachoeira São
+                Romão</label><br><input type="checkbox" name="headings" id="Cachoeira da Prata"
+                value="Cachoeira da Prata" checked="" /><label for="Cachoeira da Prata">Cachoeira da
+                Prata</label><br><input type="checkbox" name="headings" id="Portal da Chapada" value="Portal da Chapada"
+                checked="" /><label for="Portal da Chapada">Portal da Chapada</label><br><input type="checkbox"
+                name="headings" id="Dicas para a sua viagem até a Chapada das Mesas"
+                value="Dicas para a sua viagem até a Chapada das Mesas" checked="" /><label
+                for="Dicas para a sua viagem até a Chapada das Mesas">Dicas para a sua viagem até a Chapada das
+                Mesas</label><br><input type="checkbox" name="headings"
+                id="Encontre seguro viagem para qualquer destino do Brasil!"
+                value="Encontre seguro viagem para qualquer destino do Brasil!" checked="" /><label
+                for="Encontre seguro viagem para qualquer destino do Brasil!">Encontre seguro viagem para qualquer
+                destino do Brasil!</label><br><input type="checkbox" name="headings"
+                id="Viagem para a Chapada das Mesas: roteiro e informações completas"
+                value="Viagem para a Chapada das Mesas: roteiro e informações completas" checked="" /><label
+                for="Viagem para a Chapada das Mesas: roteiro e informações completas">Viagem para a Chapada das Mesas:
+                roteiro e informações completas</label><br><input type="checkbox" name="headings"
+                id="A cidade de Carolina" value="A cidade de Carolina" checked="" /><label for="A cidade de Carolina">A
+                cidade de Carolina</label><br><input type="checkbox" name="headings" id="A criação do Parque"
+                value="A criação do Parque" checked="" /><label for="A criação do Parque">A criação do
+                Parque</label><br><input type="checkbox" name="headings" id="Viagem para a Chapada das Mesas"
+                value="Viagem para a Chapada das Mesas" checked="" /><label for="Viagem para a Chapada das Mesas">Viagem
+                para a Chapada das Mesas</label><br><input type="checkbox" name="headings" id="Quando ir"
+                value="Quando ir" checked="" /><label for="Quando ir">Quando ir</label><br><input type="checkbox"
+                name="headings" id="Como chegar" value="Como chegar" checked="" /><label for="Como chegar">Como
+                chegar</label><br><input type="checkbox" name="headings" id="Roteiro de 4 dias"
+                value="Roteiro de 4 dias" checked="" /><label for="Roteiro de 4 dias">Roteiro de 4
+                dias</label><br><input type="checkbox" name="headings" id="DIA 1: cachoeiras e pôr do sol"
+                value="DIA 1: cachoeiras e pôr do sol" checked="" /><label for="DIA 1: cachoeiras e pôr do sol">DIA 1:
+                cachoeiras e pôr do sol</label><br><input type="checkbox" name="headings"
+                id="DIA 2: trilha e cachoeiras do Parque" value="DIA 2: trilha e cachoeiras do Parque"
+                checked="" /><label for="DIA 2: trilha e cachoeiras do Parque">DIA 2: trilha e cachoeiras do
+                Parque</label><br><input type="checkbox" name="headings" id="DIA 3: Pedra Caída e Portal"
+                value="DIA 3: Pedra Caída e Portal" checked="" /><label for="DIA 3: Pedra Caída e Portal">DIA 3: Pedra
+                Caída e Portal</label><br><input type="checkbox" name="headings" id="DIA 4: Poço Azul ecachoeras"
+                value="DIA 4: Poço Azul ecachoeras" checked="" /><label for="DIA 4: Poço Azul ecachoeras">DIA 4: Poço
+                Azul ecachoeras</label><br><input type="checkbox" name="headings" id="Veja mais dicas do Maranhão"
+                value="Veja mais dicas do Maranhão" checked="" /><label for="Veja mais dicas do Maranhão">Veja mais
+                dicas do Maranhão</label><br><input type="checkbox" name="headings"
+                id="Quantas horas de São Luís para Chapada das Mesas?"
+                value="Quantas horas de São Luís para Chapada das Mesas?" checked="" /><label
+                for="Quantas horas de São Luís para Chapada das Mesas?">Quantas horas de São Luís para Chapada das
+                Mesas?</label><br><input type="checkbox" name="headings" id="Como ir para a Chapada das Mesas?"
+                value="Como ir para a Chapada das Mesas?" checked="" /><label
+                for="Como ir para a Chapada das Mesas?">Como
+                ir para a Chapada das Mesas?</label><br><input type="checkbox" name="headings"
+                id="Que cidade fica Chapada das Mesas?" value="Que cidade fica Chapada das Mesas?" checked="" /><label
+                for="Que cidade fica Chapada das Mesas?">Que cidade fica Chapada das Mesas?</label><br><input
+                type="checkbox" name="headings" id="Quanto tempo de São Luís para Chapada das Mesas?"
+                value="Quanto tempo de São Luís para Chapada das Mesas?" checked="" /><label
+                for="Quanto tempo de São Luís para Chapada das Mesas?">Quanto tempo de São Luís para Chapada das
+                Mesas?</label><br><input type="checkbox" name="headings" id="O que visitar na Chapada das Mesas?"
+                value="O que visitar na Chapada das Mesas?" checked="" /><label
+                for="O que visitar na Chapada das Mesas?">O que visitar na Chapada das Mesas?</label><br><input
+                type="checkbox" name="headings" id="Quanto tempo ficar Chapada das Mesas?"
+                value="Quanto tempo ficar Chapada das Mesas?" checked="" /><label
+                for="Quanto tempo ficar Chapada das Mesas?">Quanto tempo ficar Chapada das Mesas?</label><br>
+            <input type="submit" value="Copy to clipboard">
+        </form>
     </div>
 </body>
 
