@@ -35,6 +35,19 @@ def index():
         return render_template('form.html'), 200, {'Content-Type': 'text/html'}
 
 
+@app.route('/headings', methods=['POST'])
+def headings():
+    # Get the keyword from the request
+    if 'keyword' in request.form and request.form['keyword'] != '':
+        keyword = request.form['keyword']
+        # Let's get the headings from the top 10 results + also ak
+        headings = topic_finder.get_headings(keyword)
+        result = {'headings': headings}
+        return json.dumps(result), 200, {'Content-Type': 'application/json'}
+    else:
+        return '{"error": "No keyword set"}', 400, {'Content-Type': 'application/json'}
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)

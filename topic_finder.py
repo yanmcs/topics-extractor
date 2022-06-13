@@ -5,7 +5,10 @@ import people_also_ask
 # Extract information from a given url using the Content Extractor API
 def get_json_from_url(url):
     url = "https://contentextractor.herokuapp.com/?url=" + url
-    return requests.get(url, timeout=10).json()
+    response = requests.get(url, timeout=10)
+    print(response.text)
+    json = response.json()
+    return json
 
 
 # Does a Google search and returns the top 10 results.
@@ -58,13 +61,13 @@ def get_headings(keyword):
     for url in urls:
         print('Getting headings from: ' + url)
         try:
-            json = get_json_from_url(url)
+            info = get_json_from_url(url)
         except Exception as e:
             print(e)
             print("Error getting headings from: " + url)
             continue
         else:
-            article_headings = json['article_headings']
+            article_headings = info['article_headings']
             print("Headings: " + " , ".join(headings))
             for heading in article_headings:
                 print(heading)

@@ -22,32 +22,46 @@
             font-size: 16px;
         }
 
-        #loading {
-            display: none;
-            background-color: blanchedalmond;
-            border: 1px solid black;
-            padding: 10px;
-            margin: 10px 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 100;
-        }
     </style>
-    <script type="text/javascript">// <![CDATA[
-        function loading() {
-            $("#loading").show();
-            $("#content").hide();
-        }
-    // ]]></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Ajax form submit and print JSON response in the console
+        $(document).ready(function() {
+            $('#form').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/headings',
+                    data: $('#form').serialize(),
+                    success: function(data) {
+                        console.log(data);
+                        // Iterate over the "headings' key in the JSON object and change html
+                        for (var i = 0; i < data.headings.length; i++) {
+                            $('#results').append(
+                                '<p>' + data.headings[i] + '</p>'
+                            );
+                        }
+                    }
+                    // print the response in the console on fail
+                }).fail(function(data) {
+                    console.log(data);
+                }); 
+                });
+            });
+
+        // Change div content to loading image while ajax call is in progress
+        $(document).ajaxStart(function() {
+            $('#result').html('<img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" alt="Loading...">');
+        });
+        // Change div content to error message if ajax call fails
+        $(document).ajaxError(function() {
+            $('#result').html('<p>Error: Ajax call failed.</p>');
+        });
+
+    </script>
 </head>
 
 <body style="text-align:center;">
-    <div id="loading">
-        <h2>Wait for topic building...</h2>
-    </div> 
     <div id="content">
         <h1>Topic finder</h1>
         <p>
@@ -59,13 +73,16 @@
             Wordpress.<br>
             <b>Clean text</b> will return the topics without the HTML tags.<br>
         </p>
-        <form method="get" action="/">
+        <form method="post" action="/" id="form">
             <label>Keyword:</label><br>
             <input style="width: 700px; max-width: 100%;" type="text" name="keyword"><br>
 
-            <input type="submit" value="Get topics" onclick="loading();">
+            <input type="submit" value="Get topics">
             <input type="reset" value="Reset form">
         </form>
+        <div id="result">
+            Results will be shown here.
+        </div>
         <p>
             You can find the source code of this project on <a href="https://github.com/yanmcs/topics-extractor"
                 target="_blank">Github</a>.
