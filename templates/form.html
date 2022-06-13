@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <title>Content extractor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        label,
+        input,
+        select {
+            margin: 5px 0;
+            padding: 5px 10px;
+        }
+
+        form {
+            font-size: 16px;
+        }
+
+        #loading {
+            display: none;
+            background-color: blanchedalmond;
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+        }
+    </style>
+    <script type="text/javascript">// <![CDATA[
+        function loading() {
+            $("#loading").show();
+            $("#content").hide();
+        }
+    // ]]></script>
+</head>
+
+<body style="text-align:center;">
+    <div id="loading">
+        <h2>Wait for topic building...</h2>
+    </div> 
+    <div id="content">
+        <h1>Topic finder</h1>
+        <p>
+            Get the most important topics to be used in your content. Topics are extracted from Google Also Asked
+            Questions and the top 10 results in SERP.
+        </p>
+        <p>
+            <b>Copy to wordpress</b> will return the content of the article with the Gutenberg blocks to be pasted on
+            Wordpress.<br>
+            <b>Clean text</b> will return the topics without the HTML tags.<br>
+        </p>
+        <form method="get" action="/">
+            <label>Keyword:</label><br>
+            <input style="width: 700px; max-width: 100%;" type="text" name="keyword"><br>
+
+            <input type="submit" value="Get topics" onclick="loading();">
+            <input type="reset" value="Reset form">
+        </form>
+        <p>
+            You can find the source code of this project on <a href="https://github.com/yanmcs/content-extractor"
+                target="_blank">Github</a>.
+        </p>
+    </div>
+</body>
+
+</html>
