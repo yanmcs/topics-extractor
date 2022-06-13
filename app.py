@@ -29,7 +29,7 @@ def index():
         """</h1>
         </body>
         </html>
-        """ % (keyword, headings), 200, {'Content-Type': 'text/html'}
+        """, 200, {'Content-Type': 'text/html'}
     else:
         # flask render form.html
         return render_template('form.html'), 200, {'Content-Type': 'text/html'}
