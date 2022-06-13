@@ -79,5 +79,3 @@ def get_headings(keyword):
         headings.append(question)
     
     return headings
-
-print(get_headings("chá verde para emagrecer"))
