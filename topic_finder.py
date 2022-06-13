@@ -68,7 +68,7 @@ def get_headings(keyword):
             for heading in article_headings:
                 print(heading)
                 # Remove unicode from headings
-                heading = headings.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+                heading = heading.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
                 # Remove extra spaces
                 heading = ' '.join(heading.split())
                 headings.append(heading.strip())
