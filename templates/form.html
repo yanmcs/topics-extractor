@@ -81,6 +81,17 @@
             alert("Copied to clipboard! \n" + text);
         }
 
+        // Disable submit button during AJAX request and change text to "Loading...".
+        function disableSubmitButton() {
+            $("#submit").prop("disabled", true);
+            $("#submit").val("Loading...");
+        }
+        // Enable submit button after AJAX request and change text to "Submit".
+        function enableSubmitButton() {
+            $("#submit").prop("disabled", false);
+            $("#submit").val("Get topics");
+        }
+
 
         // Copies the string to the clipboard.
         function copyToWordpress() {
@@ -158,22 +169,23 @@
             Get the most important topics to be used in your content. Topics are extracted from Google Also Asked
             Questions and the top 10 results in SERP.
         </p>
-        <p>
-            <b>Copy to wordpress</b> will return the content of the article with the Gutenberg blocks to be pasted on
-            Wordpress.<br>
-            <b>Clean text</b> will return the topics without the HTML tags.<br>
-        </p>
         <form method="post" action="/" id="form">
             <label>Keyword:</label><br>
             <input style="width: 700px; max-width: 100%;" type="text" name="keyword"><br>
 
-            <input type="submit" value="Get topics">
+            <input type="submit" value="Get topics" id="submit">
             <input type="reset" value="Reset form">
         </form>
         <p>
-            Results will be shown down here.</p>
+            Results will be shown down here. You will be able to copy the selected topics to clipboard after research is done.
+        </p>
         <div id="result">
         </div>
+        <p>
+            <b>Copy to Wordpress</b> will return the content of the article with the Gutenberg blocks to be pasted on
+            Wordpress directly.<br>
+            <b>Copy to clipboard</b> will return the topics without the HTML tags.<br>
+        </p>
         <p>
             You can find the source code of this project on <a href="https://github.com/yanmcs/topics-extractor"
                 target="_blank">Github</a>.

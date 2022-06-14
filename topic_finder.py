@@ -29,7 +29,7 @@ def also_ask_questions(query, number_of_questions=5):
     result = people_also_ask.get_related_questions(query, number_of_questions)
     questions = []
     for question in result:
-        questions.append(question.split("Pesquisar:")[0])
+        questions.append(question.split("Search for:")[0])
     return questions
 
 
