@@ -24,42 +24,87 @@
 
         #result {
             padding: 20px;
-            text-align: left;
             width: 600px;
             max-width: 100%;
-        }
-        #result input {
-            height:30px;
-            width: 20%;
-
+            text-align: center;
         }
         #result label {
             font-weight: 300;
-            text-align: left;
-            width: 80%;
+        }
+        #result button{
+            width: 120px;
+            max-width: 35%;
+            padding: 10px;
+            margin: 10px;
+        }
+        #result tr{
+            border-bottom: 1px solid #ccc;
+        }
+        #result tr:first-child{
+            width: 20%;
+        }
+        #result tr:nth-child(2){
+            width: 70%;
+        }
+        #result input[type="checkbox"]{
+            height: 20px;
+            width: 20px;
+            /*Change color of textbox*/
+        }
+        #result img{
+            max-width: 100%;
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        // When submit button on "headings form" is clicked, the function checks for all checkboxed selected
-        // then it creates a string and copys it to the clipboard.
-        $(document).ready(function () {
-            $("#headings").submit(function (e) {
-                e.preventDefault();
-                var headings = "";
-                $("input[name='headings']:checked").each(function () {
-                    headings += '<h2>'+ $(this).val() + "</h2>";
-                });
-                copyToClipboard(headings);
-                alert("Copied to clipboard: \n" + headings);
-            });
-        });
 
         // Copies the string to the clipboard.
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text)            
-            alert("Copied to clipboard: \n" + text);
+        function copyToClipboard() {
+            // Creates a string with all checked checkboxes.
+            var text = "";
+            $("input[type=checkbox]:checked").each(function() {
+                text += $(this).val() + "\n";
+            });
+            // Creates a temporary element to hold the string.
+            var temp = document.createElement("textarea");
+            // Sets the string to the value of the temporary element.
+            temp.value = text;
+            // Appends the temporary element to the DOM.
+            document.body.appendChild(temp);
+            // Selects the text in the temporary element.
+            temp.select();
+            // Copies the text to the clipboard.
+            document.execCommand("copy");
+            // Removes the temporary element from the DOM.
+            document.body.removeChild(temp);
+            // Displays a message that the text has been copied to the clipboard.
+            alert("Copied to clipboard! \n" + text);
         }
+
+
+        // Copies the string to the clipboard.
+        function copyToWordpress() {
+            // Creates a string with all checked checkboxes.
+            var text = "";
+            $("input[type=checkbox]:checked").each(function() {
+                text += "<h2>"+ $(this).val() + "</h2>\n";
+            });
+            // Creates a temporary element to hold the string.
+            var temp = document.createElement("textarea");
+            // Sets the string to the value of the temporary element.
+            temp.value = text;
+            // Appends the temporary element to the DOM.
+            document.body.appendChild(temp);
+            // Selects the text in the temporary element.
+            temp.select();
+            // Copies the text to the clipboard.
+            document.execCommand("copy");
+            // Removes the temporary element from the DOM.
+            document.body.removeChild(temp);
+            // Displays a message that the text has been copied to the clipboard.
+            alert("Copied to clipboard! \n" + text);
+        }
+
 
         // Ajax form submit and print JSON response in the console
         $(document).ready(function () {
@@ -72,14 +117,19 @@
                     success: function (data) {
                         console.log(data);
                         // Iterate over the "headings' key in the JSON object and change html
-                        let html = '<form id="headings">';
+                        let html = '<form id="headings" onsubmit="event.preventDefault()">';
+                            html+= '<p>Select headings you want to copy to clipboard:</p>';
+                            html+= '<table>';
                         for (i = 0; i < data.headings.length; i++) {
-                            html += '<input type="checkbox" name="headings" id="' + data.headings[i] + '" value="' + data.headings[i] + '" checked />';
-                            html += '<label for="' + data.headings[i] + '">' + data.headings[i] + '</label><br>';
+                            html += '<tr class="heading-option">'
+                            html += '<td><input type="checkbox" name="headings" id="' + data.headings[i] + '" value="' + data.headings[i] + '" checked ></td>';
+                            html += '<td><label for="' + data.headings[i] + '">' + data.headings[i] + '</label></td>';
+                            html += '</tr>';
                         }
                         // Add copy button to copy all selected headings to the clipboard
-                        html += '<button type="button" onclick="copyToClipboard()">Copy to Wordpress</button>';
-                        html += '</form>';
+                        html += '</table></form><button href="javascript:void()" onclick="copyToClipboard()" >Copy to clipboard</button>';
+                        html += '<button href="javascript:void()" onclick="copyToWordpress()" >Copy to Wordpress</button>';
+                        html += '';
                         $('#result').html(html);
                     }
                     // print the response in the console on fail
@@ -120,8 +170,9 @@
             <input type="submit" value="Get topics">
             <input type="reset" value="Reset form">
         </form>
+        <p>
+            Results will be shown down here.</p>
         <div id="result">
-            Results will be shown here.
         </div>
         <p>
             You can find the source code of this project on <a href="https://github.com/yanmcs/topics-extractor"
