@@ -25,7 +25,7 @@ def google_search(query, results=10):
 
 
 # Returns the people also ask questions for the given keyword.
-def also_ask_questions(query, number_of_questions=5):
+def also_ask_questions(query, number_of_questions=10):
     result = people_also_ask.get_related_questions(query, number_of_questions)
     questions = []
     for question in result:
