@@ -142,6 +142,8 @@
                         html += '<button href="javascript:void()" onclick="copyToWordpress()" >Copy to Wordpress</button>';
                         html += '';
                         $('#result').html(html);
+                        // Enable submit button after AJAX request and change text to "Submit".
+                        enableSubmitButton();
                     }
                     // print the response in the console on fail
                 }).fail(function (data) {
@@ -153,10 +155,14 @@
         // Change div content to loading image while ajax call is in progress
         $(document).ajaxStart(function () {
             $('#result').html('<img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" alt="Loading...">');
+            // Disable submit button during AJAX request and change text to "Loading...".
+            disableSubmitButton();
         });
         // Change div content to error message if ajax call fails
         $(document).ajaxError(function () {
-            $('#result').html('<p>Error: Ajax call failed.</p>');
+            $('#result').html('<p>Error: Ajax call failed. <b>Click on "Get topics" to try again.</b></p>');
+            // Enable submit button after AJAX request and change text to "Submit".
+            enableSubmitButton();
         });
 
     </script>
